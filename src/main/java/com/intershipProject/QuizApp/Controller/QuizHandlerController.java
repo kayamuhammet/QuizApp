@@ -84,19 +84,30 @@ public class QuizHandlerController {
             }
         }
 
-        // Calculate the score
+
         float score = 0;
-        for (Question question : questions) {
-            String questionIndex = Long.toString(question.getId());
+        // Calculate the score
+        boolean timerExpired = "true".equals(params.get("timerExpired"));
+        if(!timerExpired){
 
-            // Retrieve the selected choice for the question
-            String selectedChoiceValue = params.get("choice" + questionIndex);
+            for (Question question : questions) {
+                String questionIndex = Long.toString(question.getId());
 
-            // Compare the selected choice with the correct answer from the database
-            if (selectedChoiceValue != null && selectedChoiceValue.equals(question.getCorrectAnswer())) {
-                score += 1; // Increase the score by 1 for each correct answer
+                // Retrieve the selected choice for the question
+                String selectedChoiceValue = params.get("choice" + questionIndex);
+
+                // Compare the selected choice with the correct answer from the database
+                if (selectedChoiceValue != null && !selectedChoiceValue.isEmpty()) {
+                    if (selectedChoiceValue.equals(question.getCorrectAnswer())) {
+                        score += 1; // Increase the score by 1 for each correct answer
+                    }
+                } else {
+                    // If the question is not answered, set the score for that question to 0
+                    score += 0;
+                }
             }
         }
+
 
         // Calculate the percentage score and format it to two decimal places
         float percentageScore = (float) ((score) * 100.0 / 15.0);

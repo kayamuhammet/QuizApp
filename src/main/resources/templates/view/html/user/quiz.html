@@ -37,22 +37,36 @@
         <div id="timer">Time left: <span id="countdown">1:00</span></div>
 
 
+        <!-- JavaScript to handle the timer and form submission -->
         <script>
-            var timeLeft = 60; // Time in seconds (10 minutes)
-            var timer = setInterval(function() {
-                timeLeft--;
-                var minutes = Math.floor(timeLeft / 60);
-                var seconds = timeLeft % 60;
-                document.getElementById("countdown").textContent = minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    window.location.href = "/user-dashboard"; // Redirect to userdashboard when time is up
-                }
-            }, 1000);
+            var timeLeft = 60; // 10 minutes in seconds
+
+            // Function to start the timer
+            function startTimer() {
+                var timerInterval = setInterval(function() {
+                    timeLeft--;
+                    var minutes = Math.floor(timeLeft / 60);
+                    var seconds = timeLeft % 60;
+                    document.getElementById("countdown").textContent = minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        document.getElementById("quizForm").submit(); // Submit the form automatically when timer expires
+                    }
+                }, 1000);
+            }
+
+            // Start the timer when the page loads
+            window.onload = startTimer;
+
+            // Function to handle the user's choice selection for each question
+            function handleChoiceSelection(questionId, choiceValue) {
+                // Update the hidden input field with the selected choice value
+                document.getElementById("choice" + questionId).value = choiceValue;
+            }
         </script>
 
 
-        <form action="/check-quiz" method="post" enctype="multipart/form-data">
+        <form id="quizForm" action="/check-quiz" method="post" enctype="multipart/form-data">
             <div class="card-body" th:each="question, questionIndex : ${questions}">
                 <input type="hidden" id="id" name="id" th:value="${question.id}">
                 <input type="hidden" id="course_id" name="course_id" th:value="${question.course.getId()}">
