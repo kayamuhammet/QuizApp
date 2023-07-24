@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -64,7 +65,7 @@ public class QuizHandlerController {
         return modelAndView;
     }
     @PostMapping("/check-quiz")
-    public String checkQuiz(@RequestParam Map<String, String> params, HttpServletRequest request) {
+    public ModelAndView checkQuiz(@RequestParam Map<String, String> params, HttpServletRequest request) {
         HttpSession session = request.getSession();
         String sessionId = (String) session.getAttribute("sessionId");
         User loggedInUser = userRepo.findBySessionId(sessionId);
@@ -118,8 +119,9 @@ public class QuizHandlerController {
 
         // Save the UserQuiz entity to the database
         userQuizRepo.save(userQuiz);
-
-        return "solved"; // Redirect to a page displaying the quiz result
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("redirect:/user-dashboard");
+        return modelAndView;// Redirect to a page displaying the quiz result
     }
 
 

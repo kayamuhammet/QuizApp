@@ -33,6 +33,25 @@
         <div class="card-header">
             <h3 class="card-title">Question</h3>
         </div>
+
+        <div id="timer">Time left: <span id="countdown">1:00</span></div>
+
+
+        <script>
+            var timeLeft = 60; // Time in seconds (10 minutes)
+            var timer = setInterval(function() {
+                timeLeft--;
+                var minutes = Math.floor(timeLeft / 60);
+                var seconds = timeLeft % 60;
+                document.getElementById("countdown").textContent = minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    window.location.href = "/user-dashboard"; // Redirect to userdashboard when time is up
+                }
+            }, 1000);
+        </script>
+
+
         <form action="/check-quiz" method="post" enctype="multipart/form-data">
             <div class="card-body" th:each="question, questionIndex : ${questions}">
                 <input type="hidden" id="id" name="id" th:value="${question.id}">

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,36 +52,46 @@ public class StudentController {
         return modelAndView;
     }
 
+
     @GetMapping(value = "/user-dashboard")
     public ModelAndView dashboard(HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("view/html/user/dashboard");
 
-        //get course
-        List<Course> last3courses = courseRepo.findTop3ByOrderByIdDesc();
-
         HttpSession session = request.getSession();
         String sessionId = (String) session.getAttribute("sessionId");
         User loggedInUser = userRepo.findBySessionId(sessionId);
 
-        // Her kurs için ait skorları çek ve ilgili kursların altında döngülemek üzere modele ekle
-        Map<Course, UserQuiz> latestCourseScoresMap  = new HashMap<>();
-        for (Course course : last3courses) {
-            UserQuiz latestUserScore = userQuizRepo.findTopByUserIdAndCourseIdOrderByScoreDesc(loggedInUser.getId(), course.getId());
-            latestCourseScoresMap.put(course, latestUserScore);
+        // Get the last 3 UserQuiz objects for the logged-in user
+        List<UserQuiz> last3UserQuizzes = userQuizRepo.findTop3ByUserIdOrderByScoreDesc(loggedInUser.getId());
+
+//        // Create a list to hold the corresponding courses for the last 3 UserQuiz objects
+//        List<Course> last3courses = new ArrayList<>();
+//        for (UserQuiz userQuiz : last3UserQuizzes) {
+//            Course course = userQuiz.getCourse();
+//            last3courses.add(course);
+//        }
+
+        // Pull the scores for each UserQuiz and add them to the model to loop under their respective UserQuiz
+        Map<UserQuiz, Course> latestUserQuizCoursesMap = new HashMap<>();
+        for (UserQuiz userQuiz : last3UserQuizzes) {
+            Course course = userQuiz.getCourse();
+            latestUserQuizCoursesMap.put(userQuiz, course);
         }
 
         //get announcement
-        List<Announcement> latestAnnouncements  = announcementRepo.findTop5ByOrderByCreatedDateDesc();
+        List<Announcement> latestAnnouncements = announcementRepo.findTop5ByOrderByCreatedDateDesc();
 
         //Add to modelAndView
         modelAndView.addObject("announcements", latestAnnouncements);
         modelAndView.addObject("user", loggedInUser);
-        modelAndView.addObject("courses", last3courses);
-        modelAndView.addObject("latestCourseScoresMap",latestCourseScoresMap);
+        //modelAndView.addObject("userQuizzes", last3UserQuizzes);
+        modelAndView.addObject("latestUserQuizCoursesMap", latestUserQuizCoursesMap);
 
         return modelAndView;
     }
+
+
     @GetMapping(value = "/user-quiz")
     public ModelAndView quiz(HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView();

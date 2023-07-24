@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -347,7 +348,9 @@ public class AdminController {
     }
 
     @PostMapping("/update-announcement/{id}")
-    public ModelAndView updateAnnouncement(@PathVariable("id") Long id , @ModelAttribute Announcement announcement, HttpServletRequest request) {
+    public ModelAndView updateAnnouncement(@PathVariable("id") Long id ,
+                                           @ModelAttribute Announcement announcement,
+                                           HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("redirect:/admin-announcement-list");
 

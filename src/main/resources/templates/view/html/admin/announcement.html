@@ -73,7 +73,7 @@
                         <th>Title</th>
                         <th>Content</th>
                         <th>Created Date</th>
-                        <th>Actions</th>
+                        <th colspan="2">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -83,7 +83,8 @@
                         <td th:text="${announcement.createdDate}"></td>
                         <td>
                             <a th:href="@{/admin-update-announcement/{id}(id=${announcement.id})}" class="btn btn-primary">Edit</a>
-
+                        </td>
+                        <td>
                             <form th:action="@{/admin-announcement-delete/{id}(id=${announcement.id})}" method="post">
                                 <input type="hidden" name="_method" value="delete" />
                                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>

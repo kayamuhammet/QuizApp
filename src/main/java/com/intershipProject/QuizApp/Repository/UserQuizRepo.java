@@ -1,5 +1,6 @@
 package com.intershipProject.QuizApp.Repository;
 
+import com.intershipProject.QuizApp.Model.Course;
 import com.intershipProject.QuizApp.Model.User;
 import com.intershipProject.QuizApp.Model.UserQuiz;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,4 +14,9 @@ public interface UserQuizRepo extends JpaRepository<UserQuiz, Long> {
     UserQuiz findTopByUserIdAndCourseIdOrderByScoreDesc(Long userId, Long courseId);
 
     List<UserQuiz> findByUserId(Long id);
+
+
+    List<UserQuiz> findTop3ByOrderByIdDesc();
+
+    List<UserQuiz> findTop3ByUserIdOrderByScoreDesc(Long id);
 }

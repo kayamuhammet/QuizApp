@@ -13,45 +13,53 @@
 
 <body class="hold-transition register-page">
 
-    <div class="register-logo">
-        <a href="/"><b>Quiz App</b></a>
-    </div>
+
     <div class="card">
         <div class="card-body register-card-body">
-            <p class="login-box-msg">Register a new membership</p>
-            <form action="/register/user" method="post">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="First Name" name="firstName" required>
+            <form action="/register-user" method="post">
+                <div class="register-logo">
+                    <a href="/"><b>UniQuizKBU</b></a>
                 </div>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Last Name" name="lastName" required>
-                </div>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Username" name="username" required>
-                </div>
-                <div class="input-group mb-3">
-                    <input type="password" class="form-control" placeholder="Password" name="password" required>
-                </div>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Gender" name="gender">
-                </div>
-                <div class="input-group mb-3">
-                    <input type="date" class="form-control" placeholder="Birth Date" name="birthDate">
-                </div>
-                <div class="input-group mb-3">
-                    <input type="email" class="form-control" placeholder="Email" name="email" required>
-                </div>
-                <div class="row">
-                    <div class="col-8">
-                        <div class="icheck-primary">
-                            <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
-                            <label for="agreeTerms">
-                                I agree to the <a href="#">terms</a>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <button type="submit" class="btn btn-primary btn-block">Register</button>
+                <div class="card">
+                    <div class="card-body register-card-body">
+                        <p class="login-box-msg">Register a new membership</p>
+                        <form action="/register-user" method="post">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="First Name" name="firstName" required>
+                            </div>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Last Name" name="lastName" required>
+                            </div>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Username" name="username" required>
+                            </div>
+                            <div class="input-group mb-3">
+                                <input type="password" class="form-control" placeholder="Password" name="password" required>
+                            </div>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Gender" name="gender">
+                            </div>
+                            <div class="input-group mb-3">
+                                <input type="date" class="form-control" placeholder="Birth Date" name="bithDate" required>
+                            </div>
+                            <div class="input-group mb-3">
+                                <input type="email" class="form-control" placeholder="Email" name="email" required>
+                            </div>
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="icheck-primary">
+                                        <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                                        <label for="agreeTerms">
+                                            I agree to the <a href="#">terms</a>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <button type="submit" class="btn btn-primary btn-block">Register</button>
+                                </div>
+                            </div>
+                        </form>
+
                     </div>
                 </div>
             </form>

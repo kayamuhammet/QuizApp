@@ -51,11 +51,12 @@
         <!-- CONTENT -->
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-md-6 col-lg-4 mb-4" th:each="course : ${courses}">
-                    <div th:classappend="${latestCourseScoresMap.get(course) != null} ? 'card bg-success' : 'card bg-danger'">
+                <!-- Display the last 3 UserQuiz objects and their associated courses -->
+                <div class="col-md-6 col-lg-4 mb-4" th:each="userQuizCourse : ${latestUserQuizCoursesMap}">
+                    <div th:classappend="${userQuizCourse.key != null} ? 'card bg-success' : 'card bg-danger'">
                         <div class="card-body">
                             <h4 class="card-title mb-3">
-                                <span th:text="${course.getName()}">Course Name</span>
+                                <span th:text="${userQuizCourse.value.getName()}">Course Name</span>
                             </h4>
                             <p class="card-text">Course Quiz</p>
                         </div>
@@ -63,11 +64,11 @@
                             <i class="ion ion-pie-graph"></i>
                         </div>
                         <div class="card-footer">
-                            <!-- Son skor değeri sadece bir defa gösterilir -->
+                            <!-- Display the score for each UserQuiz if available -->
                             <p>
                                 Score:
-                                <span th:if="${latestCourseScoresMap.get(course) != null}" th:text="${latestCourseScoresMap.get(course).getScore() + '%'}">-</span>
-                                <span th:unless="${latestCourseScoresMap.get(course) != null}">No score available</span>
+                                <span th:if="${userQuizCourse.key != null}" th:text="${userQuizCourse.key.getScore() + '%'}">-</span>
+                                <span th:unless="${userQuizCourse.key != null}">No score available</span>
                             </p>
                         </div>
                     </div>

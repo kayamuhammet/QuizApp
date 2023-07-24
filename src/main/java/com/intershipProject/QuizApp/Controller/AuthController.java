@@ -8,11 +8,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 @RestController
@@ -82,6 +86,13 @@ public class AuthController {
 //        return modelAndView;
 //    }
 
+    @GetMapping("/register")
+    public ModelAndView register(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("view/html/auth/register");
+        return modelAndView;
+    }
+
     @GetMapping("/logout")
     public ModelAndView logout(HttpServletRequest request) {
         RedirectView redirectView;
@@ -96,17 +107,19 @@ public class AuthController {
         return modelAndView;
     }
 
-    @PostMapping("/register-user")
+    @RequestMapping("/register-user")
     @Transactional
-    public ModelAndView registerUser(HttpServletRequest request){
+    public ModelAndView registerUser(@RequestParam String firstName,
+                                     @RequestParam String lastName,
+                                     @RequestParam String username,
+                                     @RequestParam String password,
+                                     @RequestParam String gender,
+                                     @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date bithDate,
+                                     @RequestParam String email,
+                                     @RequestParam(required = false) boolean agreeTerms,
+                                     HttpServletRequest request){
         ModelAndView modelAndView = new ModelAndView();
-        String firstName = request.getParameter("firstName");
-        String lastName = request.getParameter("lastName");
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        String gender = request.getParameter("gender");
-        String birthDate = request.getParameter("bithDate");
-        String email = request.getParameter("email");
+
 
         User existingUser = userRepo.findByUsername(username);
         if(existingUser != null){
@@ -120,6 +133,10 @@ public class AuthController {
         newUser.setFirstName(firstName);
         newUser.setLastName(lastName);
         newUser.setUsername(username);
+        newUser.setPassword(password);
+        newUser.setBithDate(bithDate);
+
+
 
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         newUser.setPassword(passwordEncoder.encode(password));
@@ -128,6 +145,8 @@ public class AuthController {
         // newUser.setBirthDate(...);
         newUser.setEmail(email);
         newUser.setRole(1); // Assuming 1 represents a regular user role
+
+        modelAndView.addObject(newUser);
 
         // Save the new user to the database
         userRepo.save(newUser);
