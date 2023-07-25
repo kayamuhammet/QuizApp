@@ -78,11 +78,13 @@
                     <b>Gender: </b> <p th:text="${user.gender}" class="float-right"></p>
                   </li>
                     <li class="list-group-item">
-                        <b>Birth Date: </b> <p th:text="${user.bithDate}" class="float-right"></p>
+                        <b>Birth Date: </b> <p th:text="${#dates.format(user.bithDate, 'yyyy-MM-dd')}" class="float-right"></p>
                     </li>
+
                 </ul>
 
                 <a href="/logout" class="btn btn-primary btn-block"><b>Logout</b></a>
+                  <a href="/change-password" class="btn btn-warning btn-block mt-3"><b>Change Password</b></a>
               </div>
               <!-- /.card-body -->
             </div>
@@ -149,8 +151,8 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <!-- AdminLTE App -->
 <script src="/js/adminlte.js"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="/js/demo.js"></script>
+<!-- AdminLTE for demo purposes
+<script src="/js/demo.js"></script> -->
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="/js/pages/dashboard.js"></script>
 </body>

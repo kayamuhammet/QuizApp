@@ -2,16 +2,19 @@ package com.intershipProject.QuizApp.Controller;
 
 import com.intershipProject.QuizApp.Model.User;
 import com.intershipProject.QuizApp.Repository.UserRepo;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
 public class UserController {
@@ -44,6 +47,41 @@ public class UserController {
 
         userRepo.save(user);
         return "User registered successfully.";
+    }
+
+    @GetMapping("/change-password")
+    public ModelAndView getChangePassword(){
+        ModelAndView modelAndView = new ModelAndView("view/html/user/change-password");
+        return modelAndView;
+    }
+
+    @PostMapping("/change-password")
+    @Transactional
+    public ModelAndView changePassword(@RequestParam String currentPassword,
+                                       @RequestParam String newPassword,
+                                       HttpServletRequest request){
+        ModelAndView modelAndView = new ModelAndView();
+        // Session
+        HttpSession session = request.getSession();
+        String sessionId = (String) session.getAttribute("sessionId");
+        User loggedInUser = userRepo.findBySessionId(sessionId);
+        // Matched current password with password
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        boolean passwordMatches = passwordEncoder.matches(currentPassword, loggedInUser.getPassword());
+        // if not matches, it give error message
+        if(!passwordMatches){
+            modelAndView.addObject("errorMessage", "Current password is incorrect.");
+            modelAndView.setViewName("view/html/user/change-password");
+            return modelAndView;
+        }
+        if(passwordMatches){
+            String hashedNewPassword = passwordEncoder.encode(newPassword);
+            loggedInUser.setPassword(hashedNewPassword);
+            userRepo.save(loggedInUser);
+        }
+        RedirectView redirectView = new RedirectView("/login", true);
+        modelAndView.setView(redirectView);
+        return modelAndView;
     }
 
 }
