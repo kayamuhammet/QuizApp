@@ -1,13 +1,7 @@
 package com.intershipProject.QuizApp.Controller.Admin;
 
-import com.intershipProject.QuizApp.Model.Announcement;
-import com.intershipProject.QuizApp.Model.Course;
-import com.intershipProject.QuizApp.Model.Question;
-import com.intershipProject.QuizApp.Model.User;
-import com.intershipProject.QuizApp.Repository.AnnouncementRepo;
-import com.intershipProject.QuizApp.Repository.CourseRepo;
-import com.intershipProject.QuizApp.Repository.QuestionRepo;
-import com.intershipProject.QuizApp.Repository.UserRepo;
+import com.intershipProject.QuizApp.Model.*;
+import com.intershipProject.QuizApp.Repository.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -33,6 +27,8 @@ public class AdminController {
     private QuestionRepo questionRepo;
     @Autowired
     private CourseRepo courseRepo;
+    @Autowired
+    private FAQRepo faqRepo;
 
     // ---DASHBOARD---
 
@@ -371,6 +367,138 @@ public class AdminController {
 
     // ---/ANNOUNCEMENT/---
 
+
+
+    // ---  / FAQ / ---
+
+
+
+
+    @GetMapping(value = "/admin-create-faq")
+    public ModelAndView createFAQ(HttpServletRequest request) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("view/html/admin/create-faq");
+
+        HttpSession session = request.getSession();
+        String sessionId = (String) session.getAttribute("sessionId");
+        User loggedInUser = userRepo.findBySessionId(sessionId);
+
+        modelAndView.addObject("user", loggedInUser);
+
+        String errorMessage = (String) request.getSession().getAttribute("errorMessage");
+        if (errorMessage != null) {
+            modelAndView.addObject("errorMessage", errorMessage);
+            request.getSession().removeAttribute("errorMessage");
+        }
+        String message = (String) request.getSession().getAttribute("message");
+        if (message != null) {
+            modelAndView.addObject("message", message);
+            request.getSession().removeAttribute("message");
+        }
+        return modelAndView;
+    }
+
+    @GetMapping(value = "/admin-faq-list")
+    public ModelAndView listFAQ(HttpServletRequest request) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("view/html/admin/faq");
+
+        HttpSession session = request.getSession();
+        String sessionId = (String) session.getAttribute("sessionId");
+        User loggedInUser = userRepo.findBySessionId(sessionId);
+
+        modelAndView.addObject("user", loggedInUser);
+
+        List<FAQ> faqs = faqRepo.findAll();
+
+        modelAndView.addObject("faqs", faqs);
+
+        return modelAndView;
+    }
+
+    @PostMapping(value = "/admin-faq-delete/{id}")
+    public ModelAndView deleteFAQ(@PathVariable Long id,
+                                HttpServletRequest request) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("redirect:/admin-faq-list");
+
+        HttpSession session = request.getSession();
+        String sessionId = (String) session.getAttribute("sessionId");
+        User loggedInUser = userRepo.findBySessionId(sessionId);
+
+        modelAndView.addObject("user", loggedInUser);
+
+
+        FAQ faq = faqRepo.findById(id).orElse(null);
+        if (faq != null) {
+            faqRepo.delete(faq);
+            String message = "FAQ deleted successfully.";
+            request.getSession().setAttribute("message", message);
+        } else {
+            String errorMessage = "FAQ not found.";
+            request.getSession().setAttribute("errorMessage", errorMessage);
+        }
+
+        return modelAndView;
+    }
+
+
+    @GetMapping("/admin-update-faq/{id}")
+    public ModelAndView updateFAQ(@PathVariable("id") Long id,
+                                HttpServletRequest request) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("view/html/admin/update-faq");
+
+        HttpSession session = request.getSession();
+        String sessionId = (String) session.getAttribute("sessionId");
+        User loggedInUser = userRepo.findBySessionId(sessionId);
+
+        modelAndView.addObject("user", loggedInUser);
+
+        FAQ faq = faqRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid faq " +
+                        "Id: " + id));
+
+        modelAndView.addObject("faq", faq);
+
+        String errorMessage = (String) request.getSession().getAttribute("errorMessage");
+        if (errorMessage != null) {
+            modelAndView.addObject("errorMessage", errorMessage);
+            request.getSession().removeAttribute("errorMessage");
+        }
+        String message = (String) request.getSession().getAttribute("message");
+        if (message != null) {
+            modelAndView.addObject("message", message);
+            request.getSession().removeAttribute("message");
+        }
+
+        return modelAndView;
+    }
+
+    @PostMapping("/update-faq/{id}")
+    public ModelAndView updateAnnouncement(@PathVariable("id") Long id ,
+                                           @ModelAttribute FAQ faq,
+                                           HttpServletRequest request) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("redirect:/admin-faq-list");
+
+        faq.setId(id);
+        FAQ updateFAQ = faqRepo.save(faq);
+
+        if (updateFAQ == null) {
+            String errorMessage = "Failed to update the faq. Please try again.";
+            request.getSession().setAttribute("errorMessage", errorMessage);
+        } else {
+            String message = "Announcement updated successfully.";
+            request.getSession().setAttribute("message", message);
+        }
+
+        return modelAndView;
+    }
+
+
+
+    // --- / end- FAQ / ----
 
 
 
