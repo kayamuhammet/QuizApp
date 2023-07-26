@@ -30,8 +30,16 @@ public class User {
     private String gender;
     @Column
     private String email;
+    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL)
+    private List<ContactUs> contactUs;
 
+    public List<ContactUs> getContactUs() {
+        return contactUs;
+    }
 
+    public void setContactUs(List<ContactUs> contactUs) {
+        this.contactUs = contactUs;
+    }
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserQuiz> userQuizzes;

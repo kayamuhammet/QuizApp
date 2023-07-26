@@ -29,6 +29,8 @@ public class AdminController {
     private CourseRepo courseRepo;
     @Autowired
     private FAQRepo faqRepo;
+    @Autowired
+    private ContactUsRepo contactUsRepo;
 
     // ---DASHBOARD---
 
@@ -499,6 +501,32 @@ public class AdminController {
 
 
     // --- / end- FAQ / ----
+
+
+    // ---  Contact - Us  ---
+
+    @GetMapping(value = "/admin-contactUs-list")
+    public ModelAndView listContactUs(HttpServletRequest request) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("view/html/admin/show-message");
+
+        HttpSession session = request.getSession();
+        String sessionId = (String) session.getAttribute("sessionId");
+        User loggedInUser = userRepo.findBySessionId(sessionId);
+
+        modelAndView.addObject("user", loggedInUser);
+
+        List<ContactUs> contactUsList = contactUsRepo.findAll();
+
+        modelAndView.addObject("contactUsList", contactUsList);
+
+        return modelAndView;
+    }
+
+
+
+
+    // --- / Contact - Us ---
 
 
 
